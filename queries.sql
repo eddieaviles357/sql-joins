@@ -67,13 +67,25 @@ Sarah      | Palmer    |         16333 |     3
 Jane       | Smith     |         15000 |     2
 */
 
-SELECT o.first_name, o.last_name, AVG(price)::NUMERIC(10,0) AS average_price, COUNT(owner_id)
+SELECT o.first_name, o.last_name, 
+AVG(price)::NUMERIC(10,0) AS average_price, 
+COUNT(owner_id)
 FROM owners o
 JOIN vehicles v
 ON v.owner_id = o.id
 GROUP BY o.first_name, o.last_name
-HAVING AVG(price) > 10000
+HAVING COUNT(owner_id) > 1 AND AVG(price) > 10000
 ORDER BY o.first_name DESC;
+
+-- or
+SELECT first_name, last_name, 
+ROUND(AVG(price)) as average_price, 
+COUNT(owner_id) 
+FROM owners o 
+JOIN vehicles v on o.id=v.owner_id 
+GROUP BY (first_name, last_name) 
+HAVING COUNT(owner_id) > 1 AND ROUND(AVG(price)) > 10000 
+ORDER BY first_name DESC;
 
 
 /*
